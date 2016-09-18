@@ -1,0 +1,78 @@
+//--------------------------------------------
+var Random = React.createClass({
+  
+  getInitialState: function () {
+    return {
+      color: [50, 100, 150]
+    };
+  },
+  
+  componentDidMount: function () {
+    this.applyColor();
+  },
+
+  componentDidUpdate: function (prevProps, prevState) {
+    this.applyColor();
+  },
+
+  formatColor: function (ary) {
+    return 'rgb(' + ary.join(', ') + ')';
+  },
+
+  isBackDark: function () {
+    var rgb = this.state.color;
+    return rgb.reduce(function(a,b){ return a+b;}) < 127 * 3;
+  },
+
+  applyColor: function () {
+    var color = this.formatColor(this.state.color);
+    document.body.style.background = color;
+  },
+
+  chooseColor: function () {
+    for (var i = 0, random = []; i < 3; i++) {
+      random.push(Math.floor(Math.random()*256));
+    }
+    return random; 
+  },
+  
+  handleClick: function () {
+    this.setState({
+      color: this.chooseColor()
+    });
+  },
+
+  render: function () {
+    return (
+      <div>
+        <h1 className={this.isBackDark() ? 'white' : 'black'}>
+					{this.formatColor(this.state.color)}
+        </h1>
+        <Button light={this.isBackDark()} onClick={this.handleClick}/>
+      </div>
+    );
+  }
+});
+
+
+
+//--------------------------------------------
+var Button = React.createClass({
+	render: function () {
+		return (
+			<button 
+				className={ this.props.light ? 'light-button' : 'dark-button' }
+        onClick={this.props.onClick}>
+				Refresh
+			</button>
+		);
+	}
+});
+
+
+
+//--------------------------------------------
+ReactDOM.render(
+  <Random />, 
+  document.getElementById('app')
+);
